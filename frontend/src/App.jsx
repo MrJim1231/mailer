@@ -4,6 +4,7 @@ import Navbar from './components/Navbar' // Путь к компоненту Nav
 import SendEmail from './pages/SendEmail' // Путь к странице SendEmail
 import AddSender from './pages/AddSender' // Путь к странице AddSender
 import DeleteSender from './pages/DeleteSender' // Путь к странице DeleteSender (страница удаления отправителя)
+import Instructions from './pages/Instructions' // Путь к странице инструкций
 
 const App = () => {
   return (
@@ -19,6 +20,8 @@ const App = () => {
           <Route path="/add-sender" element={<AddSender />} />
           {/* Страница для удаления отправителя */}
           <Route path="/delete-sender" element={<DeleteSender />} />
+          {/* Страница инструкций */}
+          <Route path="/instructions" element={<Instructions />} />
         </Routes>
       </div>
     </Router>
