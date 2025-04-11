@@ -38,13 +38,11 @@ if (empty($email)) {
 if ($sender == '1') {
     $mailUsername = $_ENV['MAIL_USERNAME_1'];
     $mailPassword = $_ENV['MAIL_PASSWORD_1'];
-    $adminEmail = $_ENV['ADMIN_EMAIL_1'];
-    $senderName = 'Мама'; // Имя для отправителя 1
+    $senderName = $_ENV['SENDER_NAME_1']; // Имя для отправителя 1
 } else {
     $mailUsername = $_ENV['MAIL_USERNAME_2'];
     $mailPassword = $_ENV['MAIL_PASSWORD_2'];
-    $adminEmail = $_ENV['ADMIN_EMAIL_2'];
-    $senderName = 'Папа'; // Имя для отправителя 2
+    $senderName = $_ENV['SENDER_NAME_2']; // Имя для отправителя 2
 }
 
 // Обработка загрузки файла
