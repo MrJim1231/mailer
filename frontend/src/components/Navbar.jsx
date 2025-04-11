@@ -17,6 +17,9 @@ const Navbar = () => {
         <Link to="/add-sender" className={styles.navLink}>
           Добавить отправителя
         </Link>
+        <Link to="/delete-sender" className={styles.navLink}>
+          Удалить отправителя
+        </Link>
       </div>
     </nav>
   )

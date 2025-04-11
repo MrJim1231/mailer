@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom' // И�
 import Navbar from './components/Navbar' // Путь к компоненту Navbar
 import SendEmail from './pages/SendEmail' // Путь к странице SendEmail
 import AddSender from './pages/AddSender' // Путь к странице AddSender
+import DeleteSender from './pages/DeleteSender' // Путь к странице DeleteSender (страница удаления отправителя)
 
 const App = () => {
   return (
@@ -10,12 +11,14 @@ const App = () => {
       <Navbar />
       <div className="content">
         <Routes>
-          {' '}
-          {/* Заменили Switch на Routes */}
+          {/* Главная страница */}
           <Route path="/" element={<h1>Добро пожаловать на главную страницу</h1>} />
+          {/* Страница для отправки сообщения */}
           <Route path="/send-email" element={<SendEmail />} />
+          {/* Страница для добавления нового отправителя */}
           <Route path="/add-sender" element={<AddSender />} />
-          {/* Добавьте другие маршруты здесь */}
+          {/* Страница для удаления отправителя */}
+          <Route path="/delete-sender" element={<DeleteSender />} />
         </Routes>
       </div>
     </Router>
