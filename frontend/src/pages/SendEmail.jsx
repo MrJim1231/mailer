@@ -3,9 +3,8 @@ import axios from 'axios'
 import styles from '../styles/SendEmail.module.css'
 
 const SendEmail = () => {
-  const [name, setName] = useState('')
   const [email, setEmail] = useState('')
-  const [message, setMessage] = useState('')
+  const [message, setMessage] = useState('') // Сообщение теперь может быть пустым
   const [file, setFile] = useState(null)
   const [status, setStatus] = useState('')
   const [loading, setLoading] = useState(false)
@@ -27,15 +26,15 @@ const SendEmail = () => {
   const handleSubmit = async (e) => {
     e.preventDefault()
 
-    if (!name || !email || !message) {
-      setStatus('Пожалуйста, заполните все обязательные поля.')
+    if (!email) {
+      // Сделаем обязательным только поле email
+      setStatus('Пожалуйста, укажите email.')
       return
     }
 
     const formData = new FormData()
-    formData.append('name', name)
     formData.append('email', email)
-    formData.append('message', message)
+    formData.append('message', message || 'Сообщение не было оставлено.') // Если сообщение пустое, отправляется текст
     formData.append('sender', sender) // Добавляем выбор отправителя
     if (file) {
       formData.append('file', file)
@@ -66,16 +65,12 @@ const SendEmail = () => {
       <h2>Отправка письма</h2>
       <form onSubmit={handleSubmit} className={styles.form}>
         <div className={styles.formGroup}>
-          <label>Ваше имя:</label>
-          <input type="text" value={name} onChange={(e) => setName(e.target.value)} required />
-        </div>
-        <div className={styles.formGroup}>
-          <label>Ваш email:</label>
+          <label>Email куда отправлять письмо:</label>
           <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
         </div>
         <div className={styles.formGroup}>
-          <label>Сообщение:</label>
-          <textarea value={message} onChange={(e) => setMessage(e.target.value)} required />
+          <label>Сообщение (можно оставить пустым):</label>
+          <textarea value={message} onChange={(e) => setMessage(e.target.value)} />
         </div>
         <div className={styles.formGroup}>
           <label>Выберите отправителя:</label>

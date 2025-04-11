@@ -23,14 +23,13 @@ $dotenv = Dotenv::createImmutable(__DIR__);
 $dotenv->load();
 
 // Получаем данные из POST-запроса
-$name = $_POST['name'] ?? '';
 $email = $_POST['email'] ?? '';
-$message = $_POST['message'] ?? '';
+$message = $_POST['message'] ?? ''; // Пустое сообщение теперь допустимо
 $sender = $_POST['sender'] ?? '1'; // Получаем выбор отправителя
 
 // Проверка данных
-if (empty($name) || empty($email) || empty($message)) {
-    echo json_encode(['status' => 'error', 'message' => 'Все поля обязательны для заполнения']);
+if (empty($email)) {
+    echo json_encode(['status' => 'error', 'message' => 'Email обязателен для заполнения']);
     http_response_code(400);
     exit;
 }
@@ -84,17 +83,17 @@ try {
 
     $mail->CharSet = 'UTF-8';
 
-    $mail->setFrom($mailUsername, 'Sender Name');
-    $mail->addAddress($email, $name);
+    // Отправитель
+    $mail->setFrom($mailUsername, 'Website');
+    $mail->addAddress($email); // Получатель — тот, кто оставил свой email
 
     $mail->isHTML(true);
-    $mail->Subject = "Новое сообщение от $name";
+    $mail->Subject = "Новое сообщение с сайта";
     $mail->Body = "
         <h2>Новое сообщение с сайта</h2>
-        <p><strong>Имя:</strong> $name</p>
         <p><strong>Email:</strong> $email</p>
         <p><strong>Сообщение:</strong></p>
-        <p>$message</p>
+        <p>" . ($message ?: 'Сообщение не было оставлено.') . "</p> <!-- Если сообщение пустое, выводится текст 'Сообщение не было оставлено' -->
     ";
 
     // Прикрепляем файл
