@@ -39,10 +39,12 @@ if ($sender == '1') {
     $mailUsername = $_ENV['MAIL_USERNAME_1'];
     $mailPassword = $_ENV['MAIL_PASSWORD_1'];
     $adminEmail = $_ENV['ADMIN_EMAIL_1'];
+    $senderName = 'Мама'; // Имя для отправителя 1
 } else {
     $mailUsername = $_ENV['MAIL_USERNAME_2'];
     $mailPassword = $_ENV['MAIL_PASSWORD_2'];
     $adminEmail = $_ENV['ADMIN_EMAIL_2'];
+    $senderName = 'Папа'; // Имя для отправителя 2
 }
 
 // Обработка загрузки файла
@@ -83,8 +85,8 @@ try {
 
     $mail->CharSet = 'UTF-8';
 
-    // Отправитель
-    $mail->setFrom($mailUsername, 'Website');
+    // Отправитель - используем имя в зависимости от выбранного отправителя
+    $mail->setFrom($mailUsername, $senderName);  // Устанавливаем имя отправителя (мама или папа)
     $mail->addAddress($email); // Получатель — тот, кто оставил свой email
 
     $mail->isHTML(true);
@@ -95,7 +97,7 @@ try {
 
     // Если сообщение не пустое, то добавляем его
     if (!empty($message)) {
-        $body .= "<p><strong>Сообщение:</strong></p><p>$message</p>";
+        $body .= "<p><strong>Message:</strong></p><p>$message</p>";
     }
 
     $mail->Body = $body;
