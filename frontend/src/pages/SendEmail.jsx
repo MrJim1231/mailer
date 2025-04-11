@@ -34,7 +34,7 @@ const SendEmail = () => {
 
     const formData = new FormData()
     formData.append('email', email)
-    formData.append('message', message || 'Сообщение не было оставлено.') // Если сообщение пустое, отправляется текст
+    formData.append('message', message) // Пустое сообщение теперь можно отправлять
     formData.append('sender', sender) // Добавляем выбор отправителя
     if (file) {
       formData.append('file', file)
