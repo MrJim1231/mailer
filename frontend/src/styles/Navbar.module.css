@@ -1,0 +1,47 @@
+/* Navbar.module.css */
+.navbar {
+  background-color: #333;
+  color: white;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: fixed; /* Закрепляем navbar */
+  top: 0; /* Прижимаем к верхней части */
+  left: 0; /* Привязываем к левому краю */
+  width: 100%; /* Растягиваем на всю ширину */
+  margin: 0 auto; /* Центрируем navbar */
+  z-index: 1000; /* Устанавливаем высокий z-index, чтобы navbar был поверх другого контента */
+  box-sizing: border-box; /* Чтобы padding не увеличивал ширину */
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.logoLink {
+  color: white;
+  text-decoration: none;
+}
+
+.navLinks {
+  display: flex;
+  gap: 1rem;
+}
+
+.navLink {
+  color: white;
+  text-decoration: none;
+  font-size: 1.1rem;
+  transition: color 0.3s ease;
+}
+
+.navLink:hover {
+  color: #f39c12;
+}
+
+/* Добавим отступ сверху для контента, чтобы не перекрывался navbar */
+body {
+  padding-top: 80px; /* Отступ для контента под navbar */
+}
