@@ -10,12 +10,10 @@ const DeleteSender = () => {
 
   // Функция для загрузки списка отправителей
   const fetchSenders = async () => {
-    // console.log('Загрузка списка отправителей...')
     try {
       const response = await axios.get('http://localhost/mailer/backend/api/get_senders.php')
       if (response.data.status === 'success') {
-        // console.log('Список отправителей успешно загружен:', response.data.senders)
-        setSenders(response.data.senders) // Сохраняем полученные данные
+        setSenders(response.data.senders)
       } else {
         console.error('Не удалось загрузить список отправителей:', response.data.message)
         setStatus('Не удалось загрузить список отправителей.')
@@ -34,22 +32,21 @@ const DeleteSender = () => {
     e.preventDefault()
 
     if (!selectedSender) {
-      console.log('Не выбран отправитель для удаления.')
       setStatus('Пожалуйста, выберите отправителя для удаления.')
       return
     }
 
     setLoading(true)
-    console.log('Удаление отправителя с ID:', selectedSender)
+    setStatus('')
 
     try {
       const response = await axios.post('http://localhost/mailer/backend/api/delete_sender.php', { senderId: selectedSender }, { headers: { 'Content-Type': 'application/json' } })
 
       if (response.data.status === 'success') {
-        console.log('Отправитель успешно удален:', selectedSender)
         setStatus('Отправитель успешно удален.')
+        setSelectedSender('') // Сброс выбранного отправителя
+        fetchSenders() // Перезагрузка списка отправителей
       } else {
-        console.error('Не удалось удалить отправителя:', response.data.message)
         setStatus('Не удалось удалить отправителя: ' + response.data.message)
       }
     } catch (error) {
