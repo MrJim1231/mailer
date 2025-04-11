@@ -1,3 +1,4 @@
+/* Основной контейнер */
 .container {
   max-width: 600px;
   margin: 0 auto;
@@ -7,25 +8,30 @@
   background-color: #f9f9f9;
 }
 
+/* Заголовок */
 h2 {
   text-align: center;
   margin-bottom: 20px;
 }
 
+/* Форма */
 .form {
   display: flex;
   flex-direction: column;
 }
 
+/* Группы полей формы */
 .formGroup {
   margin-bottom: 15px;
 }
 
+/* Метки полей */
 label {
   font-size: 1rem;
   margin-bottom: 5px;
 }
 
+/* Поля ввода */
 input,
 textarea {
   width: 100%;
@@ -33,12 +39,15 @@ textarea {
   font-size: 1rem;
   border: 1px solid #ccc;
   border-radius: 4px;
+  box-sizing: border-box;
 }
 
+/* Текстовое поле */
 textarea {
   height: 150px;
 }
 
+/* Кнопка */
 .button {
   padding: 10px 20px;
   background-color: #4caf50;
@@ -47,15 +56,54 @@ textarea {
   border-radius: 4px;
   cursor: pointer;
   font-size: 1rem;
+  transition: background-color 0.3s;
 }
 
 .button:hover {
   background-color: #45a049;
 }
 
+/* Статус */
 .status {
   margin-top: 20px;
   text-align: center;
   font-size: 1.2rem;
   font-weight: bold;
+  color: #333;
+}
+
+/* Контейнер для пароля */
+.passwordContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+/* Метка для чекбокса */
+.showPasswordLabel {
+  margin-left: 10px;
+  font-size: 0.9rem;
+  color: #007bff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+/* Стили для чекбокса */
+.showPasswordLabel input {
+  margin-right: 5px;
+  transform: scale(1.2); /* Увеличиваем размер чекбокса */
+  margin-top: -2px; /* Выравниваем чекбокс по вертикали */
+}
+
+/* Стиль для текста рядом с чекбоксом */
+.showPasswordLabel {
+  font-size: 1rem;
+  color: #333;
+}
+
+/* Анимация для кнопки */
+.button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
 }

@@ -20,10 +20,15 @@ $dotenv = Dotenv::createImmutable(__DIR__);
 $dotenv->load();
 
 // Получаем данные из POST-запроса
-$senderName = $_POST['senderName'] ?? '';
-$email = $_POST['email'] ?? '';
-$password = $_POST['password'] ?? '';
-$adminEmail = $_POST['adminEmail'] ?? '';
+$data = json_decode(file_get_contents('php://input'), true); // Декодируем JSON
+
+// Логирование для отладки
+error_log(print_r($data, true)); // Печатает в лог
+
+$senderName = $data['senderName'] ?? '';
+$email = $data['email'] ?? '';
+$password = $data['password'] ?? '';
+$adminEmail = $data['adminEmail'] ?? '';
 
 // Проверка данных
 if (empty($senderName) || empty($email) || empty($password) || empty($adminEmail)) {
@@ -40,7 +45,10 @@ $newSender = "\nMAIL_USERNAME_{$senderName}=\"$email\"\nMAIL_PASSWORD_{$senderNa
 $envContent .= $newSender;
 
 // Сохраняем изменения в .env файле
-file_put_contents(__DIR__ . '/../.env', $envContent);
-
-echo json_encode(['status' => 'success', 'message' => 'Отправитель успешно добавлен']);
-http_response_code(200);
+if (file_put_contents(__DIR__ . '/../.env', $envContent)) {
+    echo json_encode(['status' => 'success', 'message' => 'Отправитель успешно добавлен']);
+    http_response_code(200);
+} else {
+    echo json_encode(['status' => 'error', 'message' => 'Не удалось сохранить данные отправителя.']);
+    http_response_code(500);
+}

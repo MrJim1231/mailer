@@ -9,6 +9,7 @@ const AddSender = () => {
   const [adminEmail, setAdminEmail] = useState('')
   const [status, setStatus] = useState('')
   const [loading, setLoading] = useState(false)
+  const [showPassword, setShowPassword] = useState(false) // Состояние для отображения/скрытия пароля
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -21,17 +22,25 @@ const AddSender = () => {
     setLoading(true)
 
     try {
-      const response = await axios.post('http://localhost/mailer/backend/api/add_sender.php', {
-        senderName,
-        email,
-        password,
-        adminEmail,
-      })
+      const response = await axios.post(
+        'http://localhost/mailer/backend/api/add_sender.php',
+        {
+          senderName,
+          email,
+          password,
+          adminEmail,
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json', // Указываем, что отправляем JSON
+          },
+        }
+      )
 
-      if (response.status === 200) {
+      if (response.data.status === 'success') {
         setStatus('Отправитель успешно добавлен!')
       } else {
-        setStatus('Не удалось добавить отправителя.')
+        setStatus('Не удалось добавить отправителя: ' + response.data.message)
       }
     } catch (error) {
       setStatus('Ошибка при добавлении отправителя.')
@@ -55,7 +64,17 @@ const AddSender = () => {
         </div>
         <div className={styles.formGroup}>
           <label>Пароль отправителя:</label>
-          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+          <div className={styles.passwordContainer}>
+            <input type={showPassword ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)} required />
+            <label className={styles.showPasswordLabel}>
+              <input
+                type="checkbox"
+                checked={showPassword}
+                onChange={() => setShowPassword(!showPassword)} // Переключаем состояние при изменении
+              />
+              Показать пароль
+            </label>
+          </div>
         </div>
         <div className={styles.formGroup}>
           <label>Email администратора:</label>
