@@ -6,23 +6,47 @@ const SendEmail = () => {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [message, setMessage] = useState('')
+  const [file, setFile] = useState(null) // Состояние для файла
   const [status, setStatus] = useState('')
   const [loading, setLoading] = useState(false)
+
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0]
+    if (selectedFile) {
+      const allowedTypes = ['application/pdf', 'text/plain', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document']
+      if (!allowedTypes.includes(selectedFile.type)) {
+        setStatus('Неверный тип файла. Поддерживаются только PDF, TXT и DOCX.')
+        return
+      }
+      setFile(selectedFile)
+      setStatus('') // Сбрасываем сообщение об ошибке
+    }
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
 
-    const data = {
-      name,
-      email,
-      message,
+    if (!name || !email || !message) {
+      setStatus('Пожалуйста, заполните все обязательные поля.')
+      return
     }
 
-    setLoading(true) // Устанавливаем состояние загрузки
+    const formData = new FormData()
+    formData.append('name', name)
+    formData.append('email', email)
+    formData.append('message', message)
+    if (file) {
+      formData.append('file', file)
+    }
+
+    setLoading(true)
 
     try {
-      // Путь на прямую без API_URL
-      const response = await axios.post('http://localhost/mailer/backend/api/send_email.php', data)
+      const response = await axios.post('http://localhost/mailer/backend/api/send_email.php', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      })
 
       if (response.status === 200) {
         setStatus('Сообщение успешно отправлено!')
@@ -31,7 +55,7 @@ const SendEmail = () => {
       setStatus('Не удалось отправить сообщение.')
       console.error('Ошибка при отправке:', error)
     } finally {
-      setLoading(false) // Снимаем состояние загрузки
+      setLoading(false)
     }
   }
 
@@ -50,6 +74,10 @@ const SendEmail = () => {
         <div className={styles.formGroup}>
           <label>Сообщение:</label>
           <textarea value={message} onChange={(e) => setMessage(e.target.value)} required />
+        </div>
+        <div className={styles.formGroup}>
+          <label>Прикрепить файл (PDF, TXT, DOCX):</label>
+          <input type="file" onChange={handleFileChange} />
         </div>
         <button type="submit" className={styles.button} disabled={loading}>
           {loading ? 'Отправка...' : 'Отправить сообщение'}
