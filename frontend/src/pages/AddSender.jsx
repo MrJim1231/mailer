@@ -6,7 +6,6 @@ const AddSender = () => {
   const [senderName, setSenderName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [adminEmail, setAdminEmail] = useState('')
   const [status, setStatus] = useState('')
   const [loading, setLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false) // Состояние для отображения/скрытия пароля
@@ -14,7 +13,7 @@ const AddSender = () => {
   const handleSubmit = async (e) => {
     e.preventDefault()
 
-    if (!senderName || !email || !password || !adminEmail) {
+    if (!senderName || !email || !password) {
       setStatus('Пожалуйста, заполните все поля.')
       return
     }
@@ -28,7 +27,6 @@ const AddSender = () => {
           senderName,
           email,
           password,
-          adminEmail,
         },
         {
           headers: {
@@ -75,10 +73,6 @@ const AddSender = () => {
               Показать пароль
             </label>
           </div>
-        </div>
-        <div className={styles.formGroup}>
-          <label>Email администратора:</label>
-          <input type="email" value={adminEmail} onChange={(e) => setAdminEmail(e.target.value)} required />
         </div>
         <button type="submit" className={styles.button} disabled={loading}>
           {loading ? 'Добавление...' : 'Добавить отправителя'}

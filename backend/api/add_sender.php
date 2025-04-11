@@ -29,10 +29,9 @@ error_log(print_r($data, true)); // Печатает в лог
 $senderName = $data['senderName'] ?? '';
 $email = $data['email'] ?? '';
 $password = $data['password'] ?? '';
-$adminEmail = $data['adminEmail'] ?? '';
 
 // Проверка данных
-if (empty($senderName) || empty($email) || empty($password) || empty($adminEmail)) {
+if (empty($senderName) || empty($email) || empty($password)) {
     echo json_encode(['status' => 'error', 'message' => 'Все поля обязаны быть заполнены.']);
     http_response_code(400);
     exit;
@@ -41,8 +40,15 @@ if (empty($senderName) || empty($email) || empty($password) || empty($adminEmail
 // Получаем текущие переменные из .env
 $envContent = file_get_contents(__DIR__ . '/.env'); // Используем правильный путь
 
+// Извлекаем все строки из .env, чтобы определить следующий индекс
+preg_match_all('/MAIL_USERNAME_(\d+)="([^"]+)"/', $envContent, $matches);
+
+// Определяем следующий индекс
+$lastIndex = !empty($matches[1]) ? max($matches[1]) : 0;
+$nextIndex = $lastIndex + 1;
+
 // Добавляем новые данные отправителя
-$newSender = "\nMAIL_USERNAME_{$senderName}=\"$email\"\nMAIL_PASSWORD_{$senderName}=\"$password\"\nSENDER_NAME_{$senderName}=\"$adminEmail\"";
+$newSender = "\nMAIL_USERNAME_{$nextIndex}=\"$email\"\nMAIL_PASSWORD_{$nextIndex}=\"$password\"\nSENDER_NAME_{$nextIndex}=\"$senderName\"";
 $envContent .= $newSender;
 
 // Сохраняем изменения в .env файле
@@ -53,3 +59,4 @@ if (file_put_contents(__DIR__ . '/.env', $envContent)) { // Путь корре�
     echo json_encode(['status' => 'error', 'message' => 'Не удалось сохранить данные отправителя.']);
     http_response_code(500);
 }
+?>

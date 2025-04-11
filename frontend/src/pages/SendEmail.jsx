@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import styles from '../styles/SendEmail.module.css'
 
@@ -9,7 +9,27 @@ const SendEmail = () => {
   const [status, setStatus] = useState('')
   const [loading, setLoading] = useState(false)
   const [sender, setSender] = useState('1') // Стейт для выбора отправителя
+  const [senders, setSenders] = useState([]) // Стейт для списка отправителей
   const [ip, setIp] = useState('') // Стейт для хранения IP-адреса
+
+  useEffect(() => {
+    // Получаем список отправителей при монтировании компонента
+    const fetchSenders = async () => {
+      try {
+        const response = await axios.get('http://localhost/mailer/backend/api/get_senders.php')
+        if (response.data.status === 'success') {
+          setSenders(response.data.senders) // Сохраняем список отправителей
+        } else {
+          setStatus('Не удалось загрузить список отправителей.')
+        }
+      } catch (error) {
+        setStatus('Ошибка при загрузке отправителей.')
+        console.error('Ошибка:', error)
+      }
+    }
+
+    fetchSenders()
+  }, [])
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0]
@@ -93,8 +113,15 @@ const SendEmail = () => {
         <div className={styles.formGroup}>
           <label>Выберите отправителя:</label>
           <select value={sender} onChange={(e) => setSender(e.target.value)} required>
-            <option value="1">Отправитель 1 (berolegnik@gmail.com)</option>
-            <option value="2">Отправитель 2 (berezhnoioleh@gmail.com)</option>
+            {senders.length > 0 ? (
+              senders.map((sender) => (
+                <option key={sender.id} value={sender.id}>
+                  {sender.senderName} ({sender.mailUsername})
+                </option>
+              ))
+            ) : (
+              <option value="">Загружается...</option>
+            )}
           </select>
         </div>
         <div className={styles.formGroup}>
