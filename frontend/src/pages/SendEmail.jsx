@@ -9,6 +9,7 @@ const SendEmail = () => {
   const [status, setStatus] = useState('')
   const [loading, setLoading] = useState(false)
   const [sender, setSender] = useState('1') // Стейт для выбора отправителя
+  const [ip, setIp] = useState('') // Стейт для хранения IP-адреса
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0]
@@ -23,6 +24,16 @@ const SendEmail = () => {
     }
   }
 
+  const getIpAddress = async () => {
+    try {
+      const response = await axios.get('https://api.ipify.org?format=json')
+      console.log('Полученный IP:', response.data.ip) // Выводим IP в консоль
+      setIp(response.data.ip)
+    } catch (error) {
+      console.error('Ошибка при получении IP:', error)
+    }
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
 
@@ -32,10 +43,17 @@ const SendEmail = () => {
       return
     }
 
+    // Получаем IP-адрес перед отправкой
+    await getIpAddress()
+
+    // После получения IP, проверим его значение
+    console.log('IP перед отправкой формы:', ip)
+
     const formData = new FormData()
     formData.append('email', email)
     formData.append('message', message) // Пустое сообщение теперь можно отправлять
     formData.append('sender', sender) // Добавляем выбор отправителя
+    formData.append('ip', ip) // Добавляем IP-адрес
     if (file) {
       formData.append('file', file)
     }
