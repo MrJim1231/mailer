@@ -42,7 +42,7 @@ if (empty($senderName) || empty($email) || empty($password) || empty($adminEmail
 $envContent = file_get_contents(__DIR__ . '/.env'); // Используем правильный путь
 
 // Добавляем новые данные отправителя
-$newSender = "\nMAIL_USERNAME_{$senderName}=\"$email\"\nMAIL_PASSWORD_{$senderName}=\"$password\"\nADMIN_EMAIL_{$senderName}=\"$adminEmail\"";
+$newSender = "\nMAIL_USERNAME_{$senderName}=\"$email\"\nMAIL_PASSWORD_{$senderName}=\"$password\"\nSENDER_NAME_{$senderName}=\"$adminEmail\"";
 $envContent .= $newSender;
 
 // Сохраняем изменения в .env файле

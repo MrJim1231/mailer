@@ -25,7 +25,7 @@ $dotenv->load();
 // Получаем данные из POST-запроса
 $email = $_POST['email'] ?? '';
 $message = $_POST['message'] ?? ''; // Пустое сообщение теперь допустимо
-$sender = $_POST['sender'] ?? '1'; // Получаем выбор отправителя
+$sender = $_POST['sender'] ?? '1'; // Получаем выбор отправителя (по умолчанию 1)
 
 // Проверка данных
 if (empty($email)) {
@@ -34,16 +34,10 @@ if (empty($email)) {
     exit;
 }
 
-// Определяем учетные данные отправителя в зависимости от выбранного
-if ($sender == '1') {
-    $mailUsername = $_ENV['MAIL_USERNAME_1'];
-    $mailPassword = $_ENV['MAIL_PASSWORD_1'];
-    $senderName = $_ENV['SENDER_NAME_1']; // Имя для отправителя 1
-} else {
-    $mailUsername = $_ENV['MAIL_USERNAME_2'];
-    $mailPassword = $_ENV['MAIL_PASSWORD_2'];
-    $senderName = $_ENV['SENDER_NAME_2']; // Имя для отправителя 2
-}
+// Динамически формируем имена переменных в зависимости от отправителя
+$mailUsername = $_ENV['MAIL_USERNAME_' . $sender];
+$mailPassword = $_ENV['MAIL_PASSWORD_' . $sender];
+$senderName = $_ENV['SENDER_NAME_' . $sender]; // Имя для отправителя
 
 // Обработка загрузки файла
 if (isset($_FILES['file']) && $_FILES['file']['error'] == 0) {
@@ -83,8 +77,8 @@ try {
 
     $mail->CharSet = 'UTF-8';
 
-    // Отправитель - используем имя в зависимости от выбранного отправителя
-    $mail->setFrom($mailUsername, $senderName);  // Устанавливаем имя отправителя (мама или папа)
+    // Отправитель - используем имя из .env файла
+    $mail->setFrom($mailUsername, $senderName);  
     $mail->addAddress($email); // Получатель — тот, кто оставил свой email
 
     $mail->isHTML(true);
