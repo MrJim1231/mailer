@@ -26,12 +26,24 @@ $dotenv->load();
 $name = $_POST['name'] ?? '';
 $email = $_POST['email'] ?? '';
 $message = $_POST['message'] ?? '';
+$sender = $_POST['sender'] ?? '1'; // Получаем выбор отправителя
 
 // Проверка данных
 if (empty($name) || empty($email) || empty($message)) {
     echo json_encode(['status' => 'error', 'message' => 'Все поля обязательны для заполнения']);
     http_response_code(400);
     exit;
+}
+
+// Определяем учетные данные отправителя в зависимости от выбранного
+if ($sender == '1') {
+    $mailUsername = $_ENV['MAIL_USERNAME_1'];
+    $mailPassword = $_ENV['MAIL_PASSWORD_1'];
+    $adminEmail = $_ENV['ADMIN_EMAIL_1'];
+} else {
+    $mailUsername = $_ENV['MAIL_USERNAME_2'];
+    $mailPassword = $_ENV['MAIL_PASSWORD_2'];
+    $adminEmail = $_ENV['ADMIN_EMAIL_2'];
 }
 
 // Обработка загрузки файла
@@ -65,14 +77,14 @@ try {
     $mail->isSMTP();
     $mail->Host = $_ENV['MAIL_HOST'];
     $mail->SMTPAuth = true;
-    $mail->Username = $_ENV['MAIL_USERNAME'];
-    $mail->Password = $_ENV['MAIL_PASSWORD'];
+    $mail->Username = $mailUsername;
+    $mail->Password = $mailPassword;
     $mail->SMTPSecure = $_ENV['MAIL_ENCRYPTION'];
     $mail->Port = $_ENV['MAIL_PORT'];
 
     $mail->CharSet = 'UTF-8';
 
-    $mail->setFrom($_ENV['MAIL_USERNAME'], 'Sender Name');
+    $mail->setFrom($mailUsername, 'Sender Name');
     $mail->addAddress($email, $name);
 
     $mail->isHTML(true);

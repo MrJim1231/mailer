@@ -1,14 +1,15 @@
 import React, { useState } from 'react'
 import axios from 'axios'
-import styles from '../styles/SendEmail.module.css' // стиль для страницы
+import styles from '../styles/SendEmail.module.css'
 
 const SendEmail = () => {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [message, setMessage] = useState('')
-  const [file, setFile] = useState(null) // Состояние для файла
+  const [file, setFile] = useState(null)
   const [status, setStatus] = useState('')
   const [loading, setLoading] = useState(false)
+  const [sender, setSender] = useState('1') // Стейт для выбора отправителя
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0]
@@ -35,6 +36,7 @@ const SendEmail = () => {
     formData.append('name', name)
     formData.append('email', email)
     formData.append('message', message)
+    formData.append('sender', sender) // Добавляем выбор отправителя
     if (file) {
       formData.append('file', file)
     }
@@ -74,6 +76,13 @@ const SendEmail = () => {
         <div className={styles.formGroup}>
           <label>Сообщение:</label>
           <textarea value={message} onChange={(e) => setMessage(e.target.value)} required />
+        </div>
+        <div className={styles.formGroup}>
+          <label>Выберите отправителя:</label>
+          <select value={sender} onChange={(e) => setSender(e.target.value)} required>
+            <option value="1">Отправитель 1 (berolegnik@gmail.com)</option>
+            <option value="2">Отправитель 2 (berezhnoioleh@gmail.com)</option>
+          </select>
         </div>
         <div className={styles.formGroup}>
           <label>Прикрепить файл (PDF, TXT, DOCX):</label>
