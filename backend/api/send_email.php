@@ -22,6 +22,9 @@ error_reporting(E_ALL);
 $dotenv = Dotenv::createImmutable(__DIR__);
 $dotenv->load();
 
+// Подключаем файл с настройками для подключения к базе данных
+require_once __DIR__ . '/../includes/db.php'; // Убедитесь, что db.php содержит правильные данные для подключения
+
 // Получаем данные из POST-запроса
 $email = $_POST['email'] ?? '';
 $message = $_POST['message'] ?? ''; // Пустое сообщение теперь допустимо
@@ -86,8 +89,6 @@ try {
     
     // Формируем тело письма
     $body = "<h2>Новое сообщение с сайта</h2>";
-
-    // Если сообщение не пустое, то добавляем его
     if (!empty($message)) {
         $body .= "<p><strong>Message:</strong></p><p>$message</p>";
     }
@@ -100,7 +101,16 @@ try {
     }
 
     if ($mail->send()) {
-        echo json_encode(['status' => 'success', 'message' => 'Сообщение успешно отправлено']);
+        // Запись в базу данных после успешной отправки письма
+        $stmt = $conn->prepare("INSERT INTO email_history (sender_name, sender_email, recipient_email, message, status) VALUES (?, ?, ?, ?, ?)");
+        $status = 'sent'; // Успешно отправлено
+        $stmt->bind_param("sssss", $senderName, $mailUsername, $email, $message, $status);
+        
+        if ($stmt->execute()) {
+            echo json_encode(['status' => 'success', 'message' => 'Сообщение успешно отправлено и сохранено в истории']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Ошибка при записи в базу данных']);
+        }
     } else {
         echo json_encode(['status' => 'error', 'message' => 'Не удалось отправить сообщение']);
         http_response_code(500);

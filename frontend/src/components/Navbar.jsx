@@ -23,6 +23,10 @@ const Navbar = () => {
         <Link to="/instructions" className={styles.navLink}>
           Инструкция
         </Link>
+        <Link to="/email-history" className={styles.navLink}>
+          История сообщений
+        </Link>{' '}
+        {/* Новая ссылка на Историю сообщений */}
       </div>
     </nav>
   )
