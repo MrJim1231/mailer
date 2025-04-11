@@ -16,7 +16,8 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-$dotenv = Dotenv::createImmutable(__DIR__);
+// Загрузка .env файла из текущей директории (если он в папке api)
+$dotenv = Dotenv::createImmutable(__DIR__); 
 $dotenv->load();
 
 // Получаем данные из POST-запроса
@@ -38,14 +39,14 @@ if (empty($senderName) || empty($email) || empty($password) || empty($adminEmail
 }
 
 // Получаем текущие переменные из .env
-$envContent = file_get_contents(__DIR__ . '/../.env');
+$envContent = file_get_contents(__DIR__ . '/.env'); // Используем правильный путь
 
 // Добавляем новые данные отправителя
 $newSender = "\nMAIL_USERNAME_{$senderName}=\"$email\"\nMAIL_PASSWORD_{$senderName}=\"$password\"\nADMIN_EMAIL_{$senderName}=\"$adminEmail\"";
 $envContent .= $newSender;
 
 // Сохраняем изменения в .env файле
-if (file_put_contents(__DIR__ . '/../.env', $envContent)) {
+if (file_put_contents(__DIR__ . '/.env', $envContent)) { // Путь корректен
     echo json_encode(['status' => 'success', 'message' => 'Отправитель успешно добавлен']);
     http_response_code(200);
 } else {
