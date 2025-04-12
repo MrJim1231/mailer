@@ -26,6 +26,9 @@ const Navbar = () => {
         <Link to="/email-history" className={styles.navLink}>
           История сообщений
         </Link>{' '}
+        <Link to="/email-tester" className={styles.navLink}>
+          Проверка на спам
+        </Link>{' '}
         {/* Новая ссылка на Историю сообщений */}
       </div>
     </nav>

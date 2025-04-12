@@ -6,6 +6,7 @@ import AddSender from './pages/AddSender' // Путь к странице AddSen
 import DeleteSender from './pages/DeleteSender' // Путь к странице DeleteSender (страница удаления отправителя)
 import Instructions from './pages/Instructions' // Путь к странице инструкций
 import EmailHistory from './pages/EmailHistory' // Путь к странице истории сообщений
+import MailTester from './pages/MailTester'
 
 const App = () => {
   return (
@@ -25,6 +26,8 @@ const App = () => {
           <Route path="/instructions" element={<Instructions />} />
           {/* Страница истории сообщений */}
           <Route path="/email-history" element={<EmailHistory />} /> {/* Новый маршрут */}
+          {/* Страница проверки сообщений на спам */}
+          <Route path="/email-tester" element={<MailTester />} /> {/* Новый маршрут */}
         </Routes>
       </div>
     </Router>
