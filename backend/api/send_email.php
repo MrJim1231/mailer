@@ -83,9 +83,13 @@ try {
     $mail->isHTML(true);
     $mail->Subject = $subject;
 
-    $body = "<h2>{$subject}</h2>";
+    // Проверка, если поле message пустое
+    $body = '';
     if (!empty($message)) {
         $body .= "<p>$message</p>";
+    } else {
+        // Если message пустое, добавляем стандартное сообщение
+        $body .= "<p></p>";
     }
 
     $mail->Body = $body;
