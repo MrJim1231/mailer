@@ -85,7 +85,7 @@ try {
 
     $body = "<h2>{$subject}</h2>";
     if (!empty($message)) {
-        $body .= "<p><strong>Message:</strong></p><p>$message</p>";
+        $body .= "<p>$message</p>";
     }
 
     $mail->Body = $body;
