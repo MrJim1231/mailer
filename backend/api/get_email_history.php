@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../includes/db.php'; // Подключаем файл для подключения к базе данных
 
 // Добавляем CORS заголовки, чтобы разрешить доступ с фронтенда
-header("Access-Control-Allow-Origin: http://localhost:5173"); // Убедитесь, что это правильный URL вашего фронтенда
+header("Access-Control-Allow-Origin: *"); // Разрешить доступ с любых доменов
 header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization"); // Если используете Authorization или другие заголовки
 header('Content-Type: application/json');
