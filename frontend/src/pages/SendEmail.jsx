@@ -4,21 +4,21 @@ import styles from '../styles/SendEmail.module.css'
 
 const SendEmail = () => {
   const [email, setEmail] = useState('')
-  const [message, setMessage] = useState('') // Сообщение теперь может быть пустым
+  const [subject, setSubject] = useState('') // Новое состояние для темы письма
+  const [message, setMessage] = useState('')
   const [file, setFile] = useState(null)
   const [status, setStatus] = useState('')
   const [loading, setLoading] = useState(false)
-  const [sender, setSender] = useState('1') // Стейт для выбора отправителя
-  const [senders, setSenders] = useState([]) // Стейт для списка отправителей
-  const [ip, setIp] = useState('') // Стейт для хранения IP-адреса
+  const [sender, setSender] = useState('1')
+  const [senders, setSenders] = useState([])
+  const [ip, setIp] = useState('')
 
   useEffect(() => {
-    // Получаем список отправителей при монтировании компонента
     const fetchSenders = async () => {
       try {
         const response = await axios.get('http://localhost/mailer/backend/api/get_senders.php')
         if (response.data.status === 'success') {
-          setSenders(response.data.senders) // Сохраняем список отправителей
+          setSenders(response.data.senders)
         } else {
           setStatus('Не удалось загрузить список отправителей.')
         }
@@ -40,14 +40,14 @@ const SendEmail = () => {
         return
       }
       setFile(selectedFile)
-      setStatus('') // Сбрасываем сообщение об ошибке
+      setStatus('')
     }
   }
 
   const getIpAddress = async () => {
     try {
       const response = await axios.get('https://api.ipify.org?format=json')
-      console.log('Полученный IP:', response.data.ip) // Выводим IP в консоль
+      console.log('Полученный IP:', response.data.ip)
       setIp(response.data.ip)
     } catch (error) {
       console.error('Ошибка при получении IP:', error)
@@ -57,23 +57,20 @@ const SendEmail = () => {
   const handleSubmit = async (e) => {
     e.preventDefault()
 
-    if (!email) {
-      // Сделаем обязательным только поле email
-      setStatus('Пожалуйста, укажите email.')
+    if (!email || !subject) {
+      setStatus('Пожалуйста, укажите email и тему письма.')
       return
     }
 
-    // Получаем IP-адрес перед отправкой
     await getIpAddress()
-
-    // После получения IP, проверим его значение
     console.log('IP перед отправкой формы:', ip)
 
     const formData = new FormData()
     formData.append('email', email)
-    formData.append('message', message) // Пустое сообщение теперь можно отправлять
-    formData.append('sender', sender) // Добавляем выбор отправителя
-    formData.append('ip', ip) // Добавляем IP-адрес
+    formData.append('subject', subject) // Добавляем тему письма
+    formData.append('message', message)
+    formData.append('sender', sender)
+    formData.append('ip', ip)
     if (file) {
       formData.append('file', file)
     }
@@ -105,6 +102,10 @@ const SendEmail = () => {
         <div className={styles.formGroup}>
           <label>Email куда отправлять письмо:</label>
           <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+        </div>
+        <div className={styles.formGroup}>
+          <label>Тема письма:</label>
+          <input type="text" value={subject} onChange={(e) => setSubject(e.target.value)} required />
         </div>
         <div className={styles.formGroup}>
           <label>Сообщение (можно оставить пустым):</label>

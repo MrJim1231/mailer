@@ -23,31 +23,30 @@ $dotenv = Dotenv::createImmutable(__DIR__);
 $dotenv->load();
 
 // Подключаем файл с настройками для подключения к базе данных
-require_once __DIR__ . '/../includes/db.php'; // Убедитесь, что db.php содержит правильные данные для подключения
+require_once __DIR__ . '/../includes/db.php';
 
 // Получаем данные из POST-запроса
 $email = $_POST['email'] ?? '';
-$message = $_POST['message'] ?? ''; // Пустое сообщение теперь допустимо
-$sender = $_POST['sender'] ?? '1'; // Получаем выбор отправителя (по умолчанию 1)
+$subject = $_POST['subject'] ?? 'Новое сообщение с сайта';
+$message = $_POST['message'] ?? '';
+$sender = $_POST['sender'] ?? '1';
 
-// Проверка данных
 if (empty($email)) {
     echo json_encode(['status' => 'error', 'message' => 'Email обязателен для заполнения']);
     http_response_code(400);
     exit;
 }
 
-// Динамически формируем имена переменных в зависимости от отправителя
+// Формируем данные отправителя
 $mailUsername = $_ENV['MAIL_USERNAME_' . $sender];
 $mailPassword = $_ENV['MAIL_PASSWORD_' . $sender];
-$senderName = $_ENV['SENDER_NAME_' . $sender]; // Имя для отправителя
+$senderName = $_ENV['SENDER_NAME_' . $sender];
 
-// Обработка загрузки файла
+// Обработка файла
 if (isset($_FILES['file']) && $_FILES['file']['error'] == 0) {
     $uploadDir = __DIR__ . '/../uploads/';
     $fileTmpPath = $_FILES['file']['tmp_name'];
     $fileName = $_FILES['file']['name'];
-    $fileSize = $_FILES['file']['size'];
     $fileType = $_FILES['file']['type'];
 
     $allowedTypes = ['application/pdf', 'text/plain', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
@@ -77,35 +76,29 @@ try {
     $mail->Password = $mailPassword;
     $mail->SMTPSecure = $_ENV['MAIL_ENCRYPTION'];
     $mail->Port = $_ENV['MAIL_PORT'];
-
     $mail->CharSet = 'UTF-8';
 
-    // Отправитель - используем имя из .env файла
-    $mail->setFrom($mailUsername, $senderName);  
-    $mail->addAddress($email); // Получатель — тот, кто оставил свой email
-
+    $mail->setFrom($mailUsername, $senderName);
+    $mail->addAddress($email);
     $mail->isHTML(true);
-    $mail->Subject = "Новое сообщение с сайта";
-    
-    // Формируем тело письма
-    $body = "<h2>Новое сообщение с сайта</h2>";
+    $mail->Subject = $subject;
+
+    $body = "<h2>{$subject}</h2>";
     if (!empty($message)) {
         $body .= "<p><strong>Message:</strong></p><p>$message</p>";
     }
 
     $mail->Body = $body;
 
-    // Прикрепляем файл
     if ($destPath) {
-        $mail->addAttachment($destPath, $fileName); // Добавляем файл в письмо
+        $mail->addAttachment($destPath, $fileName);
     }
 
     if ($mail->send()) {
-        // Запись в базу данных после успешной отправки письма
         $stmt = $conn->prepare("INSERT INTO email_history (sender_name, sender_email, recipient_email, message, status) VALUES (?, ?, ?, ?, ?)");
-        $status = 'sent'; // Успешно отправлено
+        $status = 'sent';
         $stmt->bind_param("sssss", $senderName, $mailUsername, $email, $message, $status);
-        
+
         if ($stmt->execute()) {
             echo json_encode(['status' => 'success', 'message' => 'Сообщение успешно отправлено и сохранено в истории']);
         } else {

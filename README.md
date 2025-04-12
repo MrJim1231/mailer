@@ -3,6 +3,9 @@ https://myaccount.google.com/apppasswords
 berezhnoioleh@gmail.com
 aetm acuc jmer lohx
 
+sitetest544@gmail.com
+hfal jera ydaf zsgy
+
 delete sender logi
 
 CREATE TABLE email_history (
